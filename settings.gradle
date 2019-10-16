@@ -1,0 +1,3 @@
+rootProject.name = 'eq'
+include 'tennis-domain'
+

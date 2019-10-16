@@ -34,7 +34,7 @@ Would be much simple to use native functional language to achieve functional sol
 
 #### Test coverage report (100%)
 
-![Post man view](img/test_coverage.png)
+![Code coverage](img/test_coverage.png)
 
 ##### TODO:
 - write more tests - cover corner cases for set points
