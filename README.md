@@ -12,9 +12,9 @@
 - [x] Functional tests: Spock, Groovy
 - [x] Application architecture - simple structural due to complex logic and short time to implement 
 - [x] Every modification is giving new object (kind of immutable) - this allows you to keep the history of the points
-Each object might be forwarded to storage without unnecessary reference to it. Also event sourcing pattern might be build on top of this solution.
+Each object might be forwarded to storage. 
 
-## A few words from the author
+## A few words from the author about functional approach
 
 I know that functional approach is desired, but Java is not the best language to stick to that. 
 - it is hard to debug lambda functions 
@@ -25,8 +25,8 @@ I know that functional approach is desired, but Java is not the best language to
 
 At some point I decided to rewrite everything to structural constructions - bug has magically fixed itself. 
 Functional approach is time consuming and it is hard to implement base on objective languages. 
-Would be much simple to use native functional language to achieve functional solution.  
- 
+Decided to focus more on logic and tests.
+
 ## Running application locally
 
 - use gradle: ./gradlew clean build
