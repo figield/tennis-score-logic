@@ -13,7 +13,6 @@
 - [x] Application architecture - simple structural due to complex logic and short time to implement 
 - [x] Every modification is giving new object (kind of immutable) - this allows you to keep the history of the points
 Each object might be forwarded to storage without unnecessary reference to it. Also event sourcing pattern might be build on top of this solution.
-- [x] Solution time: 1 days - most of the time I spent on writing tests (bug fixing and rewriting to simple form)
 
 ## A few words from the author
 
