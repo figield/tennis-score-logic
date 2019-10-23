@@ -35,7 +35,7 @@ The functional approach is desired, but it has some disadvantages too.
 
 At some point I decided to rewrite everything to structural constructions (v2,v3) - bug has magically fixed itself. 
 Decided to focus more on logic and tests (TDD). In the next step, when I fully understood the domain logic, I've refactored the code to make it easier to read and extend.
-Could got deeper into functional style, but as mentioned above I am not a fun of the over-engineering style.
+Could go deeper into functional style, but as mentioned above I am not a fun of the over-engineering style.
 
 ## Running application locally
 
