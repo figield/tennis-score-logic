@@ -37,9 +37,11 @@ At some point I decided to rewrite everything to structural constructions (v2,v3
 Decided to focus more on logic and tests (TDD). In the next step, when I fully understood the domain logic, I've refactored the code to make it easier to read and extend.
 Could go deeper into functional style, but as mentioned above I am not a fun of the over-engineering.
 
-## Running application locally
+## Testing the logic
 
-- use gradle: ./gradlew clean build
+- use gradle: 
+
+`./gradlew clean build`
 
 #### Test coverage report (100%)
 
@@ -47,5 +49,5 @@ Could go deeper into functional style, but as mentioned above I am not a fun of 
 
 ##### TODO:
 - write more tests - cover corner cases for set roundPoints
-- rewrite to functional structure - but for fun
+- rewrite to functional structure - to have better comparison
 - rewrite to Java 11
