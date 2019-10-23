@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum Points {
+public enum RoundPoints {
     ZERO(1),
     FIFTEEN(2),
     THIRTY(3),
@@ -32,7 +32,7 @@ public enum Points {
         }
     }
 
-    public Points addPoint() {
+    public RoundPoints addPoint() {
         switch (this) {
             case ZERO:
                 return FIFTEEN;

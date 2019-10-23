@@ -2,23 +2,23 @@ package com.tennis.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Value;
 
 import static com.tennis.domain.model.PlayerType.PlayerA;
 import static com.tennis.domain.model.PlayerType.PlayerB;
-import static com.tennis.domain.model.Points.ZERO;
+import static com.tennis.domain.model.RoundPoints.ZERO;
 
-@Data
+@Value
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class TennisScore {
 
     @Builder.Default
-    private PlayerScore playerA = PlayerScore.builder().playerType(PlayerA).build();
+    private PlayerScore playerScoreA = PlayerScore.builder().playerType(PlayerA).build();
     @Builder.Default
-    private PlayerScore playerB = PlayerScore.builder().playerType(PlayerB).build();
+    private PlayerScore playerScoreB = PlayerScore.builder().playerType(PlayerB).build();
     @Builder.Default
     private PointsTuple carryPoints = new PointsTuple();
 
@@ -33,65 +33,68 @@ public class TennisScore {
     static Integer SET_TIE_BREAK_LEVEL = 7;
 
     public TennisScore playerAWonPoint() {
-        return calculateNewScore(carryPoints.toBuilder().pointA(true).pointB(false).build());
+        return calculateNewScore(carryPoints.toBuilder().pointA(true).build());
     }
 
     public TennisScore playerBWonPoint() {
-        return calculateNewScore(carryPoints.toBuilder().pointA(false).pointB(true).build());
+        return calculateNewScore(carryPoints.toBuilder().pointB(true).build());
     }
 
     public String currentScore() {
-        if (!playerA.getGamesPoints().getSubPoints().equals(0) || !playerB.getGamesPoints().getSubPoints().equals(0)) {
+        if (hasSubPoints(playerScoreA.getGamesPoints(), playerScoreB.getGamesPoints())) {
             return String.format("%d/%d %d/%d %d/%d",
-                playerA.getSetPoints().getMain(),
-                playerB.getSetPoints().getMain(),
-                playerA.getGamesPoints().getMain(),
-                playerB.getGamesPoints().getMain(),
-                playerA.getGamesPoints().getSubPoints(),
-                playerB.getGamesPoints().getSubPoints());
+                playerScoreA.getSetPoints().getMain(),
+                playerScoreB.getSetPoints().getMain(),
+                playerScoreA.getGamesPoints().getMain(),
+                playerScoreB.getGamesPoints().getMain(),
+                playerScoreA.getGamesPoints().getSubPoints(),
+                playerScoreB.getGamesPoints().getSubPoints());
         }
 
-        if (!playerA.getSetPoints().getSubPoints().equals(0) || !playerB.getSetPoints().getSubPoints().equals(0)) {
+        if (hasSubPoints(playerScoreA.getSetPoints(), playerScoreB.getSetPoints())) {
             return String.format("%d/%d %d/%d",
-                playerA.getSetPoints().getMain(),
-                playerB.getSetPoints().getMain(),
-                playerA.getGamesPoints().getSubPoints(),
-                playerB.getGamesPoints().getSubPoints());
+                playerScoreA.getSetPoints().getMain(),
+                playerScoreB.getSetPoints().getMain(),
+                playerScoreA.getGamesPoints().getSubPoints(),
+                playerScoreB.getGamesPoints().getSubPoints());
         }
 
         return String.format("%d/%d %d/%d %s/%s",
-            playerA.getSetPoints().getMain(),
-            playerB.getSetPoints().getMain(),
-            playerA.getGamesPoints().getMain(),
-            playerB.getGamesPoints().getMain(),
-            playerA.getPoints(),
-            playerB.getPoints());
+            playerScoreA.getSetPoints().getMain(),
+            playerScoreB.getSetPoints().getMain(),
+            playerScoreA.getGamesPoints().getMain(),
+            playerScoreB.getGamesPoints().getMain(),
+            playerScoreA.getRoundPoints().getRoundPoints(),
+            playerScoreB.getRoundPoints().getRoundPoints());
+    }
 
+    private boolean hasSubPoints(ComplexPoints playerPoints1, ComplexPoints playerPoints2) {
+        return !playerPoints1.getSubPoints().equals(0) || !playerPoints2.getSubPoints().equals(0);
     }
 
     private TennisScore calculateNewScore(PointsTuple carryPoints) {
-        return updatePoints(carryPoints)
-            .updateGamesPoints()
-            .updateSetPoints();
+        return applyRoundPoints(carryPoints)
+            .applyGamesPoints()
+            .applySetPoints();
     }
 
-    private TennisScore updatePoints(PointsTuple carryPoints) {
-        PlayerScore updatedPlayerA = playerA.addPoint(carryPoints.isPointA(), playerB.getPoints());
-        PlayerScore updatedPlayerB = playerB.addPoint(carryPoints.isPointB(), playerA.getPoints());
+    private TennisScore applyRoundPoints(PointsTuple carryPoints) {
+        PlayerScore updatedPlayerA = playerScoreA.addRoundPoints(carryPoints.isPointA(), playerScoreA.getRoundPoints(), playerScoreB.getRoundPoints());
+        PlayerScore updatedPlayerB = playerScoreB.addRoundPoints(carryPoints.isPointB(), playerScoreB.getRoundPoints(), playerScoreA.getRoundPoints());
         PointsTuple updatedCarryPoints = updateCarryPoints(carryPoints, updatedPlayerA, updatedPlayerB);
         return new TennisScore(updatedPlayerA, updatedPlayerB, updatedCarryPoints);
     }
 
     private PointsTuple updateCarryPoints(PointsTuple pointsTuple, PlayerScore updatedPlayerA, PlayerScore updatedPlayerB) {
-        if (updatedPlayerA.getPoints() == ZERO && updatedPlayerB.getPoints() == ZERO) {
+        if (updatedPlayerA.getRoundPoints().getRoundPoints() == ZERO && updatedPlayerB.getRoundPoints().getRoundPoints() == ZERO) {
             return pointsTuple;
         }
         return new PointsTuple();
     }
 
-    private TennisScore updateGamesPoints() {
-        PlayerScore updatedPlayerA = playerA.addGamesPoints(carryPoints.isPointA(), playerB.getGamesPoints());
-        PlayerScore updatedPlayerB = playerB.addGamesPoints(carryPoints.isPointB(), playerA.getGamesPoints());
+    private TennisScore applyGamesPoints() {
+        PlayerScore updatedPlayerA = playerScoreA.addGamesPoint(carryPoints.isPointA(), playerScoreA.getGamesPoints(), playerScoreB.getGamesPoints());
+        PlayerScore updatedPlayerB = playerScoreB.addGamesPoint(carryPoints.isPointB(), playerScoreB.getGamesPoints(), playerScoreA.getGamesPoints());
         PointsTuple updatedCarryPoints = updateCarryPointsForGames(carryPoints, updatedPlayerA, updatedPlayerB);
         return new TennisScore(updatedPlayerA, updatedPlayerB, updatedCarryPoints);
     }
@@ -103,17 +106,9 @@ public class TennisScore {
         return new PointsTuple();
     }
 
-    private TennisScore updateSetPoints() {
-        PlayerScore updatedPlayerA = playerA.addSetPoints(carryPoints.isPointA(), playerB.getSetPoints());
-        PlayerScore updatedPlayerB = playerB.addSetPoints(carryPoints.isPointB(), playerA.getSetPoints());
-        PointsTuple updatedCarryPoints = updateCarryPointsForSet(carryPoints, updatedPlayerA, updatedPlayerB);
-        return new TennisScore(updatedPlayerA, updatedPlayerB, updatedCarryPoints);
-    }
-
-    private PointsTuple updateCarryPointsForSet(PointsTuple carryPoints, PlayerScore updatedPlayerA, PlayerScore updatedPlayerB) {
-        if (updatedPlayerA.getSetPoints().getMain().equals(0) && updatedPlayerB.getSetPoints().getMain().equals(0)) {
-            return carryPoints;
-        }
-        return new PointsTuple();
+    private TennisScore applySetPoints() {
+        PlayerScore updatedPlayerA = playerScoreA.addSetPoint(carryPoints.isPointA(), playerScoreA.getSetPoints(), playerScoreB.getSetPoints());
+        PlayerScore updatedPlayerB = playerScoreB.addSetPoint(carryPoints.isPointB(), playerScoreB.getSetPoints(), playerScoreA.getSetPoints());
+        return new TennisScore(updatedPlayerA, updatedPlayerB, new PointsTuple());
     }
 }

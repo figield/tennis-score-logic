@@ -1,16 +1,18 @@
 package com.tennis.domain.model
 
+import com.tennis.domain.rules.GamesRules
+import com.tennis.domain.rules.RoundRules
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
 
 import static PlayerType.PlayerA
 import static PlayerType.PlayerB
-import static Points.AD
-import static Points.FIFTEEN
-import static Points.FORTY
-import static Points.THIRTY
-import static Points.ZERO
+import static RoundPoints.AD
+import static RoundPoints.FIFTEEN
+import static RoundPoints.FORTY
+import static RoundPoints.THIRTY
+import static RoundPoints.ZERO
 import static TennisScore.GAMES_TIE_BREAK
 import static TennisScore.GAMES_WIN_DIFF
 import static TennisScore.builder
@@ -33,18 +35,20 @@ class TennisScoreSpec extends Specification {
     @Unroll
     def "Should update game score when player A won, #expectedScore"() {
         given:
+            ComplexPoints complexRoundPointsA = new ComplexPoints(0, 0, 0, 0, 0, 0, new RoundRules(), pointsA)
+            ComplexPoints complexRoundPointsB = new ComplexPoints(0, 0, 0, 0, 0, 0, new RoundRules(), pointsB)
             PlayerScore playerA = PlayerScore.builder()
-                                             .points(pointsA)
+                                             .roundPoints(complexRoundPointsA)
                                              .playerType(PlayerA)
                                              .build()
             PlayerScore playerB = PlayerScore.builder()
-                                             .points(pointsB)
+                                             .roundPoints(complexRoundPointsB)
                                              .playerType(PlayerB)
                                              .build()
 
             TennisScore tennisScore1 = builder()
-                    .playerA(playerA)
-                    .playerB(playerB)
+                    .playerScoreA(playerA)
+                    .playerScoreB(playerB)
                     .build()
         when:
             TennisScore tennisScore2 = tennisScore1.playerAWonPoint()
@@ -76,18 +80,20 @@ class TennisScoreSpec extends Specification {
     @Unroll
     def "Should update game score when player B won, #expectedScore"() {
         given:
+            ComplexPoints complexRoundPointsA = new ComplexPoints(0, 0, 0, 0, 0, 0, new RoundRules(), pointsA)
+            ComplexPoints complexRoundPointsB = new ComplexPoints(0, 0, 0, 0, 0, 0, new RoundRules(), pointsB)
             PlayerScore playerA = PlayerScore.builder()
-                                             .points(pointsA)
+                                             .roundPoints(complexRoundPointsA)
                                              .playerType(PlayerA)
                                              .build()
             PlayerScore playerB = PlayerScore.builder()
-                                             .points(pointsB)
+                                             .roundPoints(complexRoundPointsB)
                                              .playerType(PlayerB)
                                              .build()
 
             TennisScore tennisScore1 = builder()
-                    .playerA(playerA)
-                    .playerB(playerB)
+                    .playerScoreA(playerA)
+                    .playerScoreB(playerB)
                     .build()
         when:
             TennisScore tennisScore2 = tennisScore1.playerBWonPoint()
@@ -119,22 +125,24 @@ class TennisScoreSpec extends Specification {
     @Unroll
     def "Should update game score when player A won #expectedScore2 and then player B won #expectedScore3"() {
         given:
-            ComplexPoints complexGamesPointsA = new ComplexPoints(gamesPointsA, 0, GAMES_TIE_BREAK, GAMES_WIN_DIFF, GAMES_TIE_BREAK_DIFF, GAMES_TIE_BREAK_LEVEL)
-            ComplexPoints complexGamesPointsB = new ComplexPoints(gamesPointsB, 0, GAMES_TIE_BREAK, GAMES_WIN_DIFF, GAMES_TIE_BREAK_DIFF, GAMES_TIE_BREAK_LEVEL)
+            ComplexPoints complexGamesPointsA = new ComplexPoints(gamesPointsA, 0, GAMES_TIE_BREAK, GAMES_WIN_DIFF, GAMES_TIE_BREAK_DIFF, GAMES_TIE_BREAK_LEVEL, new GamesRules(), ZERO)
+            ComplexPoints complexRoundPointsA = new ComplexPoints(0, 0, 0, 0, 0, 0, new RoundRules(), pointsA)
+            ComplexPoints complexGamesPointsB = new ComplexPoints(gamesPointsB, 0, GAMES_TIE_BREAK, GAMES_WIN_DIFF, GAMES_TIE_BREAK_DIFF, GAMES_TIE_BREAK_LEVEL, new GamesRules(), ZERO)
+            ComplexPoints complexRoundPointsB = new ComplexPoints(0, 0, 0, 0, 0, 0, new RoundRules(), pointsB)
             PlayerScore playerA = PlayerScore.builder()
                                              .gamesPoints(complexGamesPointsA)
-                                             .points(pointsA)
+                                             .roundPoints(complexRoundPointsA)
                                              .playerType(PlayerA)
                                              .build()
             PlayerScore playerB = PlayerScore.builder()
                                              .gamesPoints(complexGamesPointsB)
-                                             .points(pointsB)
+                                             .roundPoints(complexRoundPointsB)
                                              .playerType(PlayerB)
                                              .build()
 
             TennisScore tennisScore1 = builder()
-                    .playerA(playerA)
-                    .playerB(playerB)
+                    .playerScoreA(playerA)
+                    .playerScoreB(playerB)
                     .build()
         when:
             TennisScore tennisScore2 = tennisScore1.playerAWonPoint()

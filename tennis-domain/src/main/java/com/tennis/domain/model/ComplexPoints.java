@@ -1,9 +1,14 @@
 package com.tennis.domain.model;
 
+import com.tennis.domain.rules.Rules;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Value;
 
-@Data
+//import io.vavr.collection.List;
+
+@Value
+@Builder(toBuilder = true)
 @AllArgsConstructor
 public class ComplexPoints {
 
@@ -13,27 +18,36 @@ public class ComplexPoints {
     Integer winDiff;
     Integer tieBreakDiff;
     Integer tieBreakLevel;
+    Rules rules;
 
+    RoundPoints roundPoints;
 
-    Integer getDiff() {
+    public Integer getDiff() {
         return tieBreak - winDiff;
     }
 
-    ComplexPoints addMainPoints() {
-        return new ComplexPoints(main + 1, subPoints, tieBreak, winDiff, tieBreakDiff, tieBreakLevel);
+    public ComplexPoints addMainPoints() {
+        return this.toBuilder()
+                   .main(main + 1)
+                   .build();
     }
 
-    ComplexPoints getErasedComplexPoints() {
-        return new ComplexPoints(0, 0, tieBreak, winDiff, tieBreakDiff, tieBreakLevel);
+    public ComplexPoints getErasedComplexPoints() {
+        return this.toBuilder()
+                   .main(0)
+                   .subPoints(0)
+                   .build();
     }
 
-    ComplexPoints addBaseOn(Integer opponentSubPoints) {
+    public ComplexPoints addBaseOn(Integer opponentSubPoints) {
         // 6 / 6 (6 / 3) -> 0 / 0 (0 / 0)
         if (subPoints >= tieBreakLevel && (subPoints - opponentSubPoints) == tieBreakDiff) {
-            return getErasedComplexPoints();
+            return getErasedComplexPoints(); // Win!
         }
         // 6 / 6 (3 / 3) -> 6 / 6 (4 / 3)
-        return new ComplexPoints(main, subPoints + 1, tieBreak, winDiff, tieBreakDiff, tieBreakLevel);
+        return this.toBuilder()
+                   .subPoints(subPoints + 1)
+                   .build();
     }
 
     public ComplexPoints eraseBaseOn(Integer opponentSubPoints) {
@@ -43,5 +57,11 @@ public class ComplexPoints {
         }
         // opponent: 6 / 6 (3 / 3) -> 6 / 6 (4 / 3)
         return this;
+    }
+
+    ComplexPoints applyPoint(boolean gainPoint, ComplexPoints playerOnePoints, ComplexPoints playerTwoPoints) {
+        return gainPoint
+            ? rules.winPoint(playerOnePoints, playerTwoPoints)
+            : rules.losePoint(playerOnePoints, playerTwoPoints);
     }
 }

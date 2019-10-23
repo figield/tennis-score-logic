@@ -8,9 +8,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import static com.tennis.domain.model.Points.AD;
-import static com.tennis.domain.model.Points.FORTY;
-import static com.tennis.domain.model.Points.ZERO;
+import static com.tennis.domain.model.RoundPoints.AD;
+import static com.tennis.domain.model.RoundPoints.FORTY;
+import static com.tennis.domain.model.RoundPoints.ZERO;
 import static com.tennis.domain.model.TennisScore.GAMES_TIE_BREAK;
 import static com.tennis.domain.model.TennisScore.GAMES_TIE_BREAK_DIFF;
 import static com.tennis.domain.model.TennisScore.GAMES_TIE_BREAK_LEVEL;
@@ -23,9 +23,9 @@ import static com.tennis.domain.model.TennisScore.SET_WIN_DIFF;
 @Data
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
-public class PlayerScore_too_functional {
-
+//@AllArgsConstructor
+public class PlayerScore_v1 {
+/*
     PlayerType playerType;
     @Builder.Default
     ComplexPoints setPoints = new ComplexPoints(0, 0, SET_TIE_BREAK, SET_WIN_DIFF, SET_TIE_BREAK_DIFF, SET_TIE_BREAK_LEVEL);
@@ -34,93 +34,93 @@ public class PlayerScore_too_functional {
     ComplexPoints gamesPoints = new ComplexPoints(0, 0, GAMES_TIE_BREAK, GAMES_WIN_DIFF, GAMES_TIE_BREAK_DIFF, GAMES_TIE_BREAK_LEVEL);
 
     @Builder.Default
-    Points points = ZERO;
+    RoundPoints roundPoints = ZERO;
 
     private static int SET = 3;
     private static int GAMES = 2;
     private static int PLAYS = 1;
 
     // Logic for the smallest points. First approach, not transformed to more generic (but it is easy to follow)
-    PlayerScore_too_functional addPoint(boolean gainPoint, Points opponentPoints) {
+    PlayerScore_v1 addPoint(boolean gainPoint, RoundPoints opponentRoundPoints) {
         if (gainPoint) {
             // 0,15,30 / X -> 15,30,40 / X
-            if (points.getValue() < FORTY.getValue()) {
-                return getPlayerWithPoints(points.addPoint());
+            if (roundPoints.getValue() < FORTY.getValue()) {
+                return getPlayerWithPoints(roundPoints.addPoint());
             }
             // 40 / AD -> 40 / 40 (opponent loses points)
-            if (points.getValue() == FORTY.getValue() && opponentPoints.getValue() == AD.getValue()) {
+            if (roundPoints.getValue() == FORTY.getValue() && opponentRoundPoints.getValue() == AD.getValue()) {
                 return this;
             }
             // 40 / 0,15,30 -> 0 / 0 (win! 40 -> 0)
-            if (points.getValue() == FORTY.getValue() && points.getValue() > opponentPoints.getValue()) {
+            if (roundPoints.getValue() == FORTY.getValue() && roundPoints.getValue() > opponentRoundPoints.getValue()) {
                 return getPlayerWithPoints(ZERO);
             }
             // AD / 40 -> 0 / 0
-            if (points.getValue() == AD.getValue() && opponentPoints.getValue() == FORTY.getValue()) {
+            if (roundPoints.getValue() == AD.getValue() && opponentRoundPoints.getValue() == FORTY.getValue()) {
                 return getPlayerWithPoints(ZERO);
             }
             // 40 / 40 -> AD / 40
-            if (points.getValue() == FORTY.getValue() && opponentPoints.getValue() == FORTY.getValue()) {
+            if (roundPoints.getValue() == FORTY.getValue() && opponentRoundPoints.getValue() == FORTY.getValue()) {
                 return getPlayerWithPoints(AD);
             }
         } else {
             // opponent: 0,15,30 / X -> 25,30,40 / X
-            if (opponentPoints.getValue() < FORTY.getValue()) {
+            if (opponentRoundPoints.getValue() < FORTY.getValue()) {
                 return this;
             }
             // opponent: 40 / AD -> 40 / 40 (winner loses points)
-            if (opponentPoints.getValue() == FORTY.getValue() && points.getValue() == AD.getValue()) {
+            if (opponentRoundPoints.getValue() == FORTY.getValue() && roundPoints.getValue() == AD.getValue()) {
                 return getPlayerWithPoints(FORTY);
             }
             // opponent: 40 / 0,15,30 -> 0 / 0 (loose! 40 -> 0)
-            if (opponentPoints.getValue() == FORTY.getValue() && opponentPoints.getValue() > points.getValue()) {
+            if (opponentRoundPoints.getValue() == FORTY.getValue() && opponentRoundPoints.getValue() > roundPoints.getValue()) {
                 return getPlayerWithPoints(ZERO);
             }
             // opponent: AD / 40 -> 0 / 0
-            if (opponentPoints.getValue() == AD.getValue() && points.getValue() == FORTY.getValue()) {
+            if (opponentRoundPoints.getValue() == AD.getValue() && roundPoints.getValue() == FORTY.getValue()) {
                 return getPlayerWithPoints(ZERO);
             }
             // opponent: 40 / 40 -> AD / 40
-            if (opponentPoints.getValue() == FORTY.getValue() && points.getValue() == FORTY.getValue()) {
+            if (opponentRoundPoints.getValue() == FORTY.getValue() && roundPoints.getValue() == FORTY.getValue()) {
                 return this;
             }
         }
         throw new IllegalStateException("Unexpected value when adding points");
     }
 
-    private PlayerScore_too_functional getPlayerWithPoints(Points points) {
-        return new PlayerScore_too_functional(playerType, setPoints, gamesPoints, points);
+    private PlayerScore_v1 getPlayerWithPoints(RoundPoints roundPoints) {
+        return new PlayerScore_v1(playerType, setPoints, gamesPoints, roundPoints);
     }
 
     // -------------------------------------------------------------------------
 
     // Logic for points in Games and Sets. Second approach for counting points (more generic, but hard to follow)
-    PlayerScore_too_functional addGamesPoints(boolean gainPoint, ComplexPoints opponentPoints) {
+    PlayerScore_v1 addGamesPoints(boolean gainPoint, ComplexPoints opponentPoints) {
         Supplier<ComplexPoints> pointsSupplier = this::getGamesPoints;
-        Function<Integer, PlayerScore_too_functional> newPlayerScore = this::getPlayerWithGamePoints;
+        Function<Integer, PlayerScore_v1> newPlayerScore = this::getPlayerWithGamePoints;
         return addGamesOrSetPoints(gainPoint, opponentPoints, pointsSupplier, newPlayerScore, GAMES);
     }
 
-    PlayerScore_too_functional addSetPoints(boolean gainPoint, ComplexPoints opponentPoints) {
+    PlayerScore_v1 addSetPoints(boolean gainPoint, ComplexPoints opponentPoints) {
         Supplier<ComplexPoints> pointsSupplier = this::getSetPoints;
-        Function<Integer, PlayerScore_too_functional> newPlayerScore = this::getPlayerWithSetPoints;
+        Function<Integer, PlayerScore_v1> newPlayerScore = this::getPlayerWithSetPoints;
         return addGamesOrSetPoints(gainPoint, opponentPoints, pointsSupplier, newPlayerScore, SET);  // this is shortcut
     }
 
-    PlayerScore_too_functional addGamesOrSetPoints(boolean gainPoint, ComplexPoints opponentPoints,
-                                                   Supplier<ComplexPoints> pointsSupplier,
-                                                   Function<Integer, PlayerScore_too_functional> newPlayerScore,
-                                                   int setOrGames) {
+    PlayerScore_v1 addGamesOrSetPoints(boolean gainPoint, ComplexPoints opponentPoints,
+                                       Supplier<ComplexPoints> pointsSupplier,
+                                       Function<Integer, PlayerScore_v1> newPlayerScore,
+                                       int setOrGames) {
         if (gainPoint) {
             return getPlayerScoreWhenWin(opponentPoints, pointsSupplier, newPlayerScore, setOrGames);
         }
         return getPlayerScoreWhenLoose(opponentPoints, pointsSupplier, newPlayerScore, setOrGames);
     }
 
-    private PlayerScore_too_functional getPlayerScoreWhenLoose(ComplexPoints opponentPoints,
-                                                               Supplier<ComplexPoints> pointsSupplier,
-                                                               Function<Integer, PlayerScore_too_functional> newPlayerScore,
-                                                               int setOrGames) {
+    private PlayerScore_v1 getPlayerScoreWhenLoose(ComplexPoints opponentPoints,
+                                                   Supplier<ComplexPoints> pointsSupplier,
+                                                   Function<Integer, PlayerScore_v1> newPlayerScore,
+                                                   int setOrGames) {
         // opponent: 0..4 / X -> 1..5 / X
         if (opponentPoints.getMain() <= pointsSupplier.get().getDiff()) {
             return this;
@@ -145,18 +145,18 @@ public class PlayerScore_too_functional {
                                                                                                  .equals(pointsSupplier.get().getTieBreak())) {
             ComplexPoints looserPoints = pointsSupplier.get();
             if (setOrGames == GAMES) {
-                return new PlayerScore_too_functional(playerType, setPoints, looserPoints.eraseBaseOn(opponentPoints.getSubPoints()), points);
+                return new PlayerScore_v1(playerType, setPoints, looserPoints.eraseBaseOn(opponentPoints.getSubPoints()), roundPoints);
             } else {
-                return new PlayerScore_too_functional(playerType, looserPoints.eraseBaseOn(opponentPoints.getSubPoints()), gamesPoints, points);
+                return new PlayerScore_v1(playerType, looserPoints.eraseBaseOn(opponentPoints.getSubPoints()), gamesPoints, roundPoints);
             }
         }
         return null;
     }
 
-    private PlayerScore_too_functional getPlayerScoreWhenWin(ComplexPoints opponentPoints,
-                                                             Supplier<ComplexPoints> pointsSupplier,
-                                                             Function<Integer, PlayerScore_too_functional> newPlayerScore,
-                                                             int setOrGames) {
+    private PlayerScore_v1 getPlayerScoreWhenWin(ComplexPoints opponentPoints,
+                                                 Supplier<ComplexPoints> pointsSupplier,
+                                                 Function<Integer, PlayerScore_v1> newPlayerScore,
+                                                 int setOrGames) {
 
         // 0..4 / X -> 1..5 / X
         if (pointsSupplier.get().getMain() <= pointsSupplier.get().getDiff()) {
@@ -181,35 +181,36 @@ public class PlayerScore_too_functional {
                                                                                                        .equals(pointsSupplier.get().getTieBreak())) {
             ComplexPoints winnerPoints = pointsSupplier.get();
             if (setOrGames == GAMES) {
-                return new PlayerScore_too_functional(playerType, setPoints, winnerPoints.addBaseOn(opponentPoints.getSubPoints()), points);
+                return new PlayerScore_v1(playerType, setPoints, winnerPoints.addBaseOn(opponentPoints.getSubPoints()), roundPoints);
             } else {
-                return new PlayerScore_too_functional(playerType, winnerPoints.addBaseOn(opponentPoints.getSubPoints()), gamesPoints, points);
+                return new PlayerScore_v1(playerType, winnerPoints.addBaseOn(opponentPoints.getSubPoints()), gamesPoints, roundPoints);
             }
         }
         return null;
     }
 
-    private PlayerScore_too_functional getPlayerWithGamePoints(Integer points) {
+    private PlayerScore_v1 getPlayerWithGamePoints(Integer points) {
         return points.equals(0) ? getPlayerWithPlusZEROGamePoints() : getPlayerWithPlusONEGamePoints();
     }
 
-    private PlayerScore_too_functional getPlayerWithPlusONEGamePoints() {
-        return new PlayerScore_too_functional(playerType, setPoints, gamesPoints.addMainPoints(), points);
+    private PlayerScore_v1 getPlayerWithPlusONEGamePoints() {
+        return new PlayerScore_v1(playerType, setPoints, gamesPoints.addMainPoints(), roundPoints);
     }
 
-    private PlayerScore_too_functional getPlayerWithPlusZEROGamePoints() {
-        return new PlayerScore_too_functional(playerType, setPoints, gamesPoints.getErasedComplexPoints(), points);
+    private PlayerScore_v1 getPlayerWithPlusZEROGamePoints() {
+        return new PlayerScore_v1(playerType, setPoints, gamesPoints.getErasedComplexPoints(), roundPoints);
     }
 
-    private PlayerScore_too_functional getPlayerWithSetPoints(Integer points) {
+    private PlayerScore_v1 getPlayerWithSetPoints(Integer points) {
         return points.equals(0) ? getPlayerWithPlusONESetPoints() : getPlayerWithPlusZEROSetPoints();
     }
 
-    private PlayerScore_too_functional getPlayerWithPlusONESetPoints() {
-        return new PlayerScore_too_functional(playerType, setPoints.addMainPoints(), gamesPoints, points);
+    private PlayerScore_v1 getPlayerWithPlusONESetPoints() {
+        return new PlayerScore_v1(playerType, setPoints.addMainPoints(), gamesPoints, roundPoints);
     }
 
-    private PlayerScore_too_functional getPlayerWithPlusZEROSetPoints() {
-        return new PlayerScore_too_functional(playerType, setPoints.getErasedComplexPoints(), gamesPoints, points);
+    private PlayerScore_v1 getPlayerWithPlusZEROSetPoints() {
+        return new PlayerScore_v1(playerType, setPoints.getErasedComplexPoints(), gamesPoints, roundPoints);
     }
+ */
 }
