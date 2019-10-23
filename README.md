@@ -26,16 +26,16 @@ the fourth set and player A is leading the tie break 5-3
 - [x] Every modification is giving new object (kind of immutable) - this allows you to keep the history of the roundPoints
 Each object might be forwarded to storage. 
 
-## A few words from the author about functional approach
+## The pure functional approach
 
-I know that functional approach is desired, but in Java it has some disadvantages. 
-- it is hard to debug lambda functions 
-- it is easy to make mistake 
-- it is very hard to follow the logic of the code
-- check PlayerScore_too_functional or PlayerScore_still_too_functional classes to check some functional cases
+The functional approach is desired, but it has some disadvantages too. 
+- it's hard to debug lambda functions 
+- it's easy to make mistake 
+- it's very hard to follow the logic of the code
 
-At some point I decided to rewrite everything to structural constructions - bug has magically fixed itself. 
-Decided to focus more on logic and tests.
+At some point I decided to rewrite everything to structural constructions (v2,v3) - bug has magically fixed itself. 
+Decided to focus more on logic and tests (TDD). In the next step, when I fully understood the domain logic, I've refactored the code to make it easier to read and extend.
+Could got deeper into functional style, but as mentioned above I am not a fun of the over-engineering style.
 
 ## Running application locally
 
