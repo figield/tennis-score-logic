@@ -5,10 +5,6 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import static com.tennis.domain.model.PlayerType.PlayerA;
-import static com.tennis.domain.model.PlayerType.PlayerB;
-import static com.tennis.domain.model.RoundPoints.ZERO;
-
 @Value
 @Builder
 @NoArgsConstructor
@@ -16,21 +12,11 @@ import static com.tennis.domain.model.RoundPoints.ZERO;
 public class TennisScore {
 
     @Builder.Default
-    private PlayerScore playerScoreA = PlayerScore.builder().playerType(PlayerA).build();
+    private PlayerScore playerScoreA = PlayerScore.forPlayerA();
     @Builder.Default
-    private PlayerScore playerScoreB = PlayerScore.builder().playerType(PlayerB).build();
+    private PlayerScore playerScoreB = PlayerScore.forPlayerB();
     @Builder.Default
-    private PointsTuple carryPoints = new PointsTuple();
-
-    static Integer GAMES_TIE_BREAK = 6;
-    static Integer GAMES_WIN_DIFF = 2;
-    static Integer GAMES_TIE_BREAK_DIFF = 2;
-    static Integer GAMES_TIE_BREAK_LEVEL = 7;
-
-    static Integer SET_TIE_BREAK = 12;
-    static Integer SET_WIN_DIFF = 3;
-    static Integer SET_TIE_BREAK_DIFF = 2;
-    static Integer SET_TIE_BREAK_LEVEL = 7;
+    private PointsTuple carryPoints = PointsTuple.builder().build();
 
     public TennisScore playerAWonPoint() {
         return calculateNewScore(carryPoints.toBuilder().pointA(true).build());
@@ -85,9 +71,9 @@ public class TennisScore {
         return new TennisScore(updatedPlayerA, updatedPlayerB, updatedCarryPoints);
     }
 
-    private PointsTuple updateCarryPoints(PointsTuple pointsTuple, PlayerScore updatedPlayerA, PlayerScore updatedPlayerB) {
-        if (updatedPlayerA.getRoundPoints().getRoundPoints() == ZERO && updatedPlayerB.getRoundPoints().getRoundPoints() == ZERO) {
-            return pointsTuple;
+    private PointsTuple updateCarryPoints(PointsTuple carryPoints, PlayerScore updatedPlayerA, PlayerScore updatedPlayerB) {
+        if (updatedPlayerA.getRoundPoints().getRoundPoints().isZero() && updatedPlayerB.getRoundPoints().getRoundPoints().isZero()) {
+            return carryPoints;
         }
         return new PointsTuple();
     }

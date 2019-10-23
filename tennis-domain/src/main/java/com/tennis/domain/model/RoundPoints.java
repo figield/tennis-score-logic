@@ -46,4 +46,8 @@ public enum RoundPoints {
                 throw new IllegalStateException("Unexpected value: " + this.value);
         }
     }
+
+    public boolean isZero(){
+        return this == ZERO;
+    }
 }

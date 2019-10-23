@@ -7,15 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 
-import static com.tennis.domain.model.RoundPoints.ZERO;
-import static com.tennis.domain.model.TennisScore.GAMES_TIE_BREAK;
-import static com.tennis.domain.model.TennisScore.GAMES_TIE_BREAK_DIFF;
-import static com.tennis.domain.model.TennisScore.GAMES_TIE_BREAK_LEVEL;
-import static com.tennis.domain.model.TennisScore.GAMES_WIN_DIFF;
-import static com.tennis.domain.model.TennisScore.SET_TIE_BREAK;
-import static com.tennis.domain.model.TennisScore.SET_TIE_BREAK_DIFF;
-import static com.tennis.domain.model.TennisScore.SET_TIE_BREAK_LEVEL;
-import static com.tennis.domain.model.TennisScore.SET_WIN_DIFF;
+import static com.tennis.domain.model.PlayerType.PlayerA;
+import static com.tennis.domain.model.PlayerType.PlayerB;
 
 @Value
 @Builder(toBuilder = true)
@@ -25,13 +18,13 @@ public class PlayerScore {
     PlayerType playerType;
 
     @Builder.Default
-    ComplexPoints setPoints = new ComplexPoints(0, 0, SET_TIE_BREAK, SET_WIN_DIFF, SET_TIE_BREAK_DIFF, SET_TIE_BREAK_LEVEL, new SetRules(), ZERO);
+    ComplexPoints setPoints = SetRules.setupPoints();
 
     @Builder.Default
-    ComplexPoints gamesPoints = new ComplexPoints(0, 0, GAMES_TIE_BREAK, GAMES_WIN_DIFF, GAMES_TIE_BREAK_DIFF, GAMES_TIE_BREAK_LEVEL, new GamesRules(), ZERO);
+    ComplexPoints gamesPoints = GamesRules.setupPoints();
 
     @Builder.Default
-    ComplexPoints roundPoints = new ComplexPoints(0, 0, 0, 0, 0, 0, new RoundRules(), ZERO);
+    ComplexPoints roundPoints = RoundRules.setupPoints();
 
     PlayerScore addRoundPoints(boolean gainPoint, ComplexPoints playerOnePoints, ComplexPoints playerTwoPoints) {
         return new PlayerScore(playerType, setPoints, gamesPoints, roundPoints.applyPoint(gainPoint, playerOnePoints, playerTwoPoints));
@@ -43,5 +36,13 @@ public class PlayerScore {
 
     PlayerScore addSetPoint(boolean gainPoint, ComplexPoints playerOnePoints, ComplexPoints playerTwoPoints) {
         return new PlayerScore(playerType, playerOnePoints.applyPoint(gainPoint, playerOnePoints, playerTwoPoints), gamesPoints, roundPoints);
+    }
+
+    static PlayerScore forPlayerA() {
+        return PlayerScore.builder().playerType(PlayerA).build();
+    }
+
+    static PlayerScore forPlayerB() {
+        return PlayerScore.builder().playerType(PlayerB).build();
     }
 }

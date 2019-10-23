@@ -19,7 +19,8 @@ public class RoundRules implements Rules {
             return playerOnePoints;
         }
         // 40 / 0,15,30 -> 0 / 0 (win! 40 -> 0)
-        if (playerOnePoints.getRoundPoints().getValue() == FORTY.getValue() && playerOnePoints.getRoundPoints().getValue() > playerTwoPoints.getRoundPoints().getValue()) {
+        if (playerOnePoints.getRoundPoints().getValue() == FORTY.getValue() && playerOnePoints.getRoundPoints().getValue() > playerTwoPoints.getRoundPoints()
+                                                                                                                                            .getValue()) {
             return playerOnePoints.toBuilder().roundPoints(ZERO).build();
         }
         // AD / 40 -> 0 / 0
@@ -28,7 +29,7 @@ public class RoundRules implements Rules {
         }
         // 40 / 40 -> AD / 40
         if (playerOnePoints.getRoundPoints().getValue() == FORTY.getValue() && playerTwoPoints.getRoundPoints().getValue() == FORTY.getValue()) {
-            return  playerOnePoints.toBuilder().roundPoints(AD).build();
+            return playerOnePoints.toBuilder().roundPoints(AD).build();
         }
 
         throw new IllegalStateException("Unexpected value when adding points");
@@ -46,7 +47,8 @@ public class RoundRules implements Rules {
             return playerOnePoints.toBuilder().roundPoints(FORTY).build();
         }
         // opponent: 40 / 0,15,30 -> 0 / 0 (loose! 40 -> 0)
-        if (playerTwoPoints.getRoundPoints().getValue() == FORTY.getValue() && playerTwoPoints.getRoundPoints().getValue() > playerOnePoints.getRoundPoints().getValue()) {
+        if (playerTwoPoints.getRoundPoints().getValue() == FORTY.getValue() && playerTwoPoints.getRoundPoints().getValue() > playerOnePoints.getRoundPoints()
+                                                                                                                                            .getValue()) {
             return playerOnePoints.toBuilder().roundPoints(ZERO).build();
         }
         // opponent: AD / 40 -> 0 / 0
@@ -58,5 +60,12 @@ public class RoundRules implements Rules {
             return playerOnePoints;
         }
         throw new IllegalStateException("Unexpected value when adding points");
+    }
+
+    public static ComplexPoints setupPoints() {
+        return ComplexPoints.builder()
+                            .rules(new RoundRules())
+                            .roundPoints(ZERO)
+                            .build();
     }
 }

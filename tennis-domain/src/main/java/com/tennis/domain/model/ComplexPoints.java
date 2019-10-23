@@ -5,22 +5,28 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 
-//import io.vavr.collection.List;
+import static com.tennis.domain.model.RoundPoints.ZERO;
 
 @Value
 @Builder(toBuilder = true)
 @AllArgsConstructor
 public class ComplexPoints {
 
-    Integer main;
-    Integer subPoints;
-    Integer tieBreak;
-    Integer winDiff;
-    Integer tieBreakDiff;
-    Integer tieBreakLevel;
+    @Builder.Default
+    Integer main = 0;
+    @Builder.Default
+    Integer subPoints = 0;
+    @Builder.Default
+    Integer tieBreak = 0;
+    @Builder.Default
+    Integer winDiff = 0;
+    @Builder.Default
+    Integer tieBreakDiff = 0;
+    @Builder.Default
+    Integer tieBreakLevel = 0;
     Rules rules;
-
-    RoundPoints roundPoints;
+    @Builder.Default
+    RoundPoints roundPoints = ZERO;
 
     public Integer getDiff() {
         return tieBreak - winDiff;

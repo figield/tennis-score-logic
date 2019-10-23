@@ -1,4 +1,4 @@
-package com.tennis.domain.model;
+package com.tennis.domain.old.model;
 
 import java.util.function.Function;
 
@@ -7,17 +7,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import static com.tennis.domain.model.RoundPoints.AD;
-import static com.tennis.domain.model.RoundPoints.FORTY;
-import static com.tennis.domain.model.RoundPoints.ZERO;
-import static com.tennis.domain.model.TennisScore.GAMES_TIE_BREAK;
-import static com.tennis.domain.model.TennisScore.GAMES_TIE_BREAK_DIFF;
-import static com.tennis.domain.model.TennisScore.GAMES_TIE_BREAK_LEVEL;
-import static com.tennis.domain.model.TennisScore.GAMES_WIN_DIFF;
-import static com.tennis.domain.model.TennisScore.SET_TIE_BREAK;
-import static com.tennis.domain.model.TennisScore.SET_TIE_BREAK_DIFF;
-import static com.tennis.domain.model.TennisScore.SET_TIE_BREAK_LEVEL;
-import static com.tennis.domain.model.TennisScore.SET_WIN_DIFF;
+//import static com.tennis.domain.model.RoundPoints.AD;
+//import static com.tennis.domain.model.RoundPoints.FORTY;
+//import static com.tennis.domain.model.RoundPoints.ZERO;
+//import static com.tennis.domain.model.TennisScore.GAMES_TIE_BREAK;
+//import static com.tennis.domain.model.TennisScore.GAMES_TIE_BREAK_DIFF;
+//import static com.tennis.domain.model.TennisScore.GAMES_TIE_BREAK_LEVEL;
+//import static com.tennis.domain.model.TennisScore.GAMES_WIN_DIFF;
+//import static com.tennis.domain.model.TennisScore.SET_TIE_BREAK;
+//import static com.tennis.domain.model.TennisScore.SET_TIE_BREAK_DIFF;
+//import static com.tennis.domain.model.TennisScore.SET_TIE_BREAK_LEVEL;
+//import static com.tennis.domain.model.TennisScore.SET_WIN_DIFF;
 
 @Data
 @Builder

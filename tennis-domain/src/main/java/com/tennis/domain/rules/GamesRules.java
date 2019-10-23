@@ -4,6 +4,11 @@ import com.tennis.domain.model.ComplexPoints;
 
 public class GamesRules implements Rules {
 
+    public static Integer GAMES_TIE_BREAK = 6;
+    public static Integer GAMES_WIN_DIFF = 2;
+    public static Integer GAMES_TIE_BREAK_DIFF = 2;
+    public static Integer GAMES_TIE_BREAK_LEVEL = 7;
+
     public ComplexPoints winPoint(ComplexPoints playerOnePoints, ComplexPoints playerTwoPoints) {
 
         // 0..4 / X -> 1..5 / X
@@ -33,7 +38,7 @@ public class GamesRules implements Rules {
         throw new IllegalStateException("Unexpected value when adding points");
     }
 
-    public  ComplexPoints losePoint(ComplexPoints playerOnePoints, ComplexPoints playerTwoPoints) {
+    public ComplexPoints losePoint(ComplexPoints playerOnePoints, ComplexPoints playerTwoPoints) {
 
         // opponent: 0..4 / X -> 1..5 / X
         if (playerTwoPoints.getMain() <= playerOnePoints.getDiff()) {
@@ -59,5 +64,15 @@ public class GamesRules implements Rules {
             return playerOnePoints.eraseBaseOn(playerTwoPoints.getSubPoints());
         }
         throw new IllegalStateException("Unexpected value when adding points");
+    }
+
+    public static ComplexPoints setupPoints() {
+        return ComplexPoints.builder()
+                            .tieBreak(GAMES_TIE_BREAK)
+                            .winDiff(GAMES_WIN_DIFF)
+                            .tieBreakDiff(GAMES_TIE_BREAK_DIFF)
+                            .tieBreakLevel(GAMES_TIE_BREAK_LEVEL)
+                            .rules(new GamesRules())
+                            .build();
     }
 }
