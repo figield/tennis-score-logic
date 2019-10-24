@@ -35,7 +35,6 @@ public class RoundRules implements Rules {
         throw new IllegalStateException("Unexpected value when adding points");
     }
 
-
     public ComplexPoints losePoint(ComplexPoints playerOnePoints, ComplexPoints playerTwoPoints) {
 
         // opponent: 0,15,30 / X -> 25,30,40 / X

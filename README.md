@@ -19,12 +19,11 @@ the fourth set and player A is leading the tie break 5-3
 
 ## Prerequisites and Solutions
 
-- [x] Code: Java 8, Gradle
-- [x] Application might be divided into sub apps (here domain model is presented only)
-- [x] Functional tests: Spock, Groovy
-- [x] Application architecture - simple structural due to complex logic and short time to implement 
-- [x] Every modification is giving new object (kind of immutable) - this allows you to keep the history of the roundPoints
-Each object might be forwarded to storage. 
+- [x] Code: Java 8, Gradle.
+- [x] Application is divided into sub apps (here domain model is presented only).
+- [x] Functional tests: Spock, Groovy.
+- [x] Application architecture - simple due to complex logic and short time to implement, written according to TDD and DDD approach.
+- [x] Every event (point) is giving new object - this allows to keep the track of the score history, is thread safe and could be a base for event sourcing architecture. 
 
 ## The pure functional approach
 
