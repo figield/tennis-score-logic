@@ -13,4 +13,9 @@ class PointsTuple {
 
     private boolean pointA;
     private boolean pointB;
+
+    public static PointsTuple end(){
+        return new PointsTuple();
+    }
+
 }

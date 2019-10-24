@@ -15,16 +15,16 @@ import static com.tennis.domain.model.PlayerType.PlayerB;
 @AllArgsConstructor
 public class PlayerScore {
 
-    PlayerType playerType;
+    private final PlayerType playerType;
 
     @Builder.Default
-    ComplexPoints setPoints = SetRules.setupPoints();
+    private final ComplexPoints setPoints = SetRules.setupPoints();
 
     @Builder.Default
-    ComplexPoints gamesPoints = GamesRules.setupPoints();
+    private final ComplexPoints gamesPoints = GamesRules.setupPoints();
 
     @Builder.Default
-    ComplexPoints roundPoints = RoundRules.setupPoints();
+    private final ComplexPoints roundPoints = RoundRules.setupPoints();
 
     PlayerScore addRoundPoints(boolean gainPoint, ComplexPoints playerOnePoints, ComplexPoints playerTwoPoints) {
         return new PlayerScore(playerType, setPoints, gamesPoints, roundPoints.applyPoint(gainPoint, playerOnePoints, playerTwoPoints));

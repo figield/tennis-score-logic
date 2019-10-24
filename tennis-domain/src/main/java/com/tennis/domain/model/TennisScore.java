@@ -12,11 +12,13 @@ import lombok.Value;
 public class TennisScore {
 
     @Builder.Default
-    private PlayerScore playerScoreA = PlayerScore.forPlayerA();
+    private final PlayerScore playerScoreA = PlayerScore.forPlayerA();
+
     @Builder.Default
-    private PlayerScore playerScoreB = PlayerScore.forPlayerB();
+    private final PlayerScore playerScoreB = PlayerScore.forPlayerB();
+
     @Builder.Default
-    private PointsTuple carryPoints = PointsTuple.builder().build();
+    private final PointsTuple carryPoints = PointsTuple.builder().build();
 
     public TennisScore playerAWonPoint() {
         return calculateNewScore(carryPoints.toBuilder().pointA(true).build());
@@ -67,29 +69,19 @@ public class TennisScore {
     private TennisScore applyRoundPoints(PointsTuple carryPoints) {
         PlayerScore updatedPlayerA = playerScoreA.addRoundPoints(carryPoints.isPointA(), playerScoreA.getRoundPoints(), playerScoreB.getRoundPoints());
         PlayerScore updatedPlayerB = playerScoreB.addRoundPoints(carryPoints.isPointB(), playerScoreB.getRoundPoints(), playerScoreA.getRoundPoints());
-        PointsTuple updatedCarryPoints = updateCarryPoints(carryPoints, updatedPlayerA, updatedPlayerB);
+        PointsTuple updatedCarryPoints = updatedPlayerA.getRoundPoints().getRoundPoints().isZero() && updatedPlayerB.getRoundPoints().getRoundPoints().isZero()
+            ? carryPoints
+            : PointsTuple.end();
         return new TennisScore(updatedPlayerA, updatedPlayerB, updatedCarryPoints);
-    }
-
-    private PointsTuple updateCarryPoints(PointsTuple carryPoints, PlayerScore updatedPlayerA, PlayerScore updatedPlayerB) {
-        if (updatedPlayerA.getRoundPoints().getRoundPoints().isZero() && updatedPlayerB.getRoundPoints().getRoundPoints().isZero()) {
-            return carryPoints;
-        }
-        return new PointsTuple();
     }
 
     private TennisScore applyGamesPoints() {
         PlayerScore updatedPlayerA = playerScoreA.addGamesPoint(carryPoints.isPointA(), playerScoreA.getGamesPoints(), playerScoreB.getGamesPoints());
         PlayerScore updatedPlayerB = playerScoreB.addGamesPoint(carryPoints.isPointB(), playerScoreB.getGamesPoints(), playerScoreA.getGamesPoints());
-        PointsTuple updatedCarryPoints = updateCarryPointsForGames(carryPoints, updatedPlayerA, updatedPlayerB);
+        PointsTuple updatedCarryPoints = updatedPlayerA.getGamesPoints().getMain().equals(0) && updatedPlayerB.getGamesPoints().getMain().equals(0)
+            ? carryPoints
+            : PointsTuple.end();
         return new TennisScore(updatedPlayerA, updatedPlayerB, updatedCarryPoints);
-    }
-
-    private PointsTuple updateCarryPointsForGames(PointsTuple carryPoints, PlayerScore updatedPlayerA, PlayerScore updatedPlayerB) {
-        if (updatedPlayerA.getGamesPoints().getMain().equals(0) && updatedPlayerB.getGamesPoints().getMain().equals(0)) {
-            return carryPoints;
-        }
-        return new PointsTuple();
     }
 
     private TennisScore applySetPoints() {
