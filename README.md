@@ -1,4 +1,4 @@
-# Tennis score logic - Extremely Questionable [EQ] 
+# Tennis score logic
 
 ## Description
 
